@@ -8,7 +8,8 @@ import (
 func Udp(socketAddr, destAddr [4]byte, ttl, port int, tv syscall.Timeval, p []byte) (hop TracerouteReturn, err error) {
 	start := time.Now()
 
-	recvSocket, err := syscall.Socket(syscall.AF_INET, syscall.SOCK_RAW, syscall.IPPROTO_ICMP)
+	// recvSocket, err := syscall.Socket(syscall.AF_INET, syscall.SOCK_RAW, syscall.IPPROTO_ICMP)
+	recvSocket, err := syscall.Socket(syscall.AF_INET, syscall.SOCK_RAW, 0x1)
 	if err != nil {
 		return hop, err
 	}
@@ -18,7 +19,8 @@ func Udp(socketAddr, destAddr [4]byte, ttl, port int, tv syscall.Timeval, p []by
 		return hop, err
 	}
 	syscall.SetsockoptInt(sendSocket, 0x0, syscall.IP_TTL, ttl)
-	syscall.SetsockoptTimeval(recvSocket, syscall.SOL_SOCKET, syscall.SO_RCVTIMEO, &tv)
+	//syscall.SetsockoptTimeval(recvSocket, syscall.SOL_SOCKET, syscall.SO_RCVTIMEO, &tv)
+	syscall.SetsockoptTimeval(recvSocket, syscall.SOL_SOCKET, 0x14, &tv)
 	defer syscall.Close(recvSocket)
 	defer syscall.Close(sendSocket)
 
